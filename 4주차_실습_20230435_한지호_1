@@ -1,0 +1,36 @@
+#스크립트가 전달받은 인자의 총 개수를 변수 int에 저장
+int=$#
+
+#현재까지의 검색결과를 저장할 문자열을 초기화
+str=""
+
+#예외처리(인자 없음)
+if [ $# -eq 0 ]
+ then
+ echo Usage:phone searchfor[...searchfor]
+   echo "(You didn't tell me what you want to search for.)"
+fi
+
+for arg in "$@"
+do
+  if [ $int -eq $# ]
+  then
+     str=$(egrep -i "$arg" mydata)
+  fi
+
+  if [ -n "$str" ]
+  then
+    str=$(egrep -i "$str|$arg" mydata)
+  fi
+
+  #--i
+  int=`expr $int - 1`
+ 
+  if [ $int -eq 0 ]
+  then
+      if [ -n "$str" ]
+      then 
+          egrep -i "$str" mydata|awk -f display.awk
+      fi
+  fi
+done
